@@ -1,10 +1,12 @@
 package com.eamirgh.femproject;
 
+import java.io.Serializable;
+
 /**
  * Created by eamirgh on 6/2/2017.
  */
 
-class Beam {
+class Beam implements Serializable {
     double youngsModulus,poissonsRatio,b,h,t;// b:width h:height t:thickness
 
     double CalculateArea(){

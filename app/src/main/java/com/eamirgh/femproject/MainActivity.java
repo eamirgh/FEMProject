@@ -1,619 +1,55 @@
 package com.eamirgh.femproject;
 
-import android.graphics.Color;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import org.ejml.simple.SimpleMatrix;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import static java.lang.Math.pow;
 
 public class MainActivity extends AppCompatActivity {
 
-    TableLayout tableLayout;
+    EditText edhBeamW,edhBeamH,edhBeamE,edhBeamT,edhBeamP,
+            edvBeamW,edvBeamH,edvBeamE,edvBeamT,edvBeamP,
+            edtBeamW,edtBeamH,edtBeamE,edtBeamT,edtBeamP,
+            edNode1X,edNode1Y,
+            edNode2X,edNode2Y,
+            edNode3X,edNode3Y,
+            edNode4X,edNode4Y,
+            edNode5X,edNode5Y,
+            edNode6X,edNode6Y,
+            edNode7X,edNode7Y;
 
-    double ST42_YOUNGS_MODULUS = 210.0* pow(10.0,9);  //Young's modulus
-    double ST44_YOUNGS_MODULUS = 200.0* pow(10.0,9);    //Young's modulus
-    double ST37_YOUNGS_MODULUS = 210.0* pow(10.0,9);    //Young's modulus
-    double POISSONS_RATIO = 0.3;   //Poisson's ratio
+    String svalhBeamW,svalhBeamH,svalhBeamE,svalhBeamT,svalhBeamP,
+            svalvBeamW,svalvBeamH,svalvBeamE,svalvBeamT,svalvBeamP,
+            svaltBeamW,svaltBeamH,svaltBeamE,svaltBeamT,svaltBeamP,
+            svalNode1X,svalNode1Y,
+            svalNode2X,svalNode2Y,
+            svalNode3X,svalNode3Y,
+            svalNode4X,svalNode4Y,
+            svalNode5X,svalNode5Y,
+            svalNode6X,svalNode6Y,
+            svalNode7X,svalNode7Y;
 
-    Beam horizontalBeam = new Beam(ST44_YOUNGS_MODULUS,POISSONS_RATIO,0.06,0.1,0.003);
-    Beam verticalBeam = new Beam(ST42_YOUNGS_MODULUS,POISSONS_RATIO,0.06,0.06,0.003);
-    Beam tiltBeam = new Beam(ST37_YOUNGS_MODULUS,POISSONS_RATIO,0.04,0.06,0.002);
+    double valhBeamW,valhBeamH,valhBeamE,valhBeamT,valhBeamP,
+            valvBeamW,valvBeamH,valvBeamE,valvBeamT,valvBeamP,
+            valtBeamW,valtBeamH,valtBeamE,valtBeamT,valtBeamP,
+            valNode1X,valNode1Y,
+            valNode2X,valNode2Y,
+            valNode3X,valNode3Y,
+            valNode4X,valNode4Y,
+            valNode5X,valNode5Y,
+            valNode6X,valNode6Y,
+            valNode7X,valNode7Y;
 
-    TwoDimenNode node1 = new TwoDimenNode(0,0);
-    TwoDimenNode node2 = new TwoDimenNode(1.2,0);
-    TwoDimenNode node3 = new TwoDimenNode(1.7,0);
-    TwoDimenNode node4 = new TwoDimenNode(1.2+1.0/3.0,-8.0/30.0);
-    TwoDimenNode node5 = new TwoDimenNode(0,-0.6);
-    TwoDimenNode node6 = new TwoDimenNode(1.7,-0.4);
-    TwoDimenNode node7 = new TwoDimenNode(1.2,-0.8);
+    Button btn;
 
-    BeamElement beamElement1 = new BeamElement(node1, node2, horizontalBeam);
-    BeamElement beamElement2 = new BeamElement(node2, node3, horizontalBeam);
-    BeamElement beamElement3 = new BeamElement(node1, node5, verticalBeam);
-    BeamElement beamElement4 = new BeamElement(node1, node7, tiltBeam);
-    BeamElement beamElement5 = new BeamElement(node2, node7, verticalBeam);
-    BeamElement beamElement6 = new BeamElement(node2, node4, tiltBeam);
-    BeamElement beamElement7 = new BeamElement(node3, node4, tiltBeam);
-    BeamElement beamElement8 = new BeamElement(node3, node6, verticalBeam);
-    BeamElement beamElement9 = new BeamElement(node4, node7, tiltBeam);
-    BeamElement beamElement10 = new BeamElement(node4, node6, tiltBeam);
-    BeamElement beamElement11 = new BeamElement(node5, node7, tiltBeam);
-    BeamElement beamElement12 = new BeamElement(node7, node6, tiltBeam);
+    Beam horizontalBeam,verticalBeam,tiltBeam;
 
-    SimpleMatrix localStiffnessMatrixElement1 = beamElement1.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement2 = beamElement2.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement3 = beamElement3.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement4 = beamElement4.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement5 = beamElement5.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement6 = beamElement6.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement7 = beamElement7.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement8 = beamElement8.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement9 = beamElement9.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement10 = beamElement10.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement11 = beamElement11.StifnessMatrix();
-    SimpleMatrix localStiffnessMatrixElement12 = beamElement12.StifnessMatrix();
-
-    SimpleMatrix rotMatrixElement1 = beamElement1.LandaMatrix();
-    SimpleMatrix rotMatrixElement2 = beamElement2.LandaMatrix();
-    SimpleMatrix rotMatrixElement3 = beamElement3.LandaMatrix();
-    SimpleMatrix rotMatrixElement4 = beamElement4.LandaMatrix();
-    SimpleMatrix rotMatrixElement5 = beamElement5.LandaMatrix();
-    SimpleMatrix rotMatrixElement6 = beamElement6.LandaMatrix();
-    SimpleMatrix rotMatrixElement7 = beamElement7.LandaMatrix();
-    SimpleMatrix rotMatrixElement8 = beamElement8.LandaMatrix();
-    SimpleMatrix rotMatrixElement9 = beamElement9.LandaMatrix();
-    SimpleMatrix rotMatrixElement10 = beamElement10.LandaMatrix();
-    SimpleMatrix rotMatrixElement11 = beamElement11.LandaMatrix();
-    SimpleMatrix rotMatrixElement12 = beamElement12.LandaMatrix();
-
-    SimpleMatrix globalStiffnessMatrixElement1 = (rotMatrixElement1.transpose().mult(localStiffnessMatrixElement1)).mult(rotMatrixElement1);
-    SimpleMatrix globalStiffnessMatrixElement2 = (rotMatrixElement2.transpose().mult(localStiffnessMatrixElement2)).mult(rotMatrixElement2);
-    SimpleMatrix globalStiffnessMatrixElement3 = (rotMatrixElement3.transpose().mult(localStiffnessMatrixElement3)).mult(rotMatrixElement3);
-    SimpleMatrix globalStiffnessMatrixElement4 = (rotMatrixElement4.transpose().mult(localStiffnessMatrixElement4)).mult(rotMatrixElement4);
-    SimpleMatrix globalStiffnessMatrixElement5 = (rotMatrixElement5.transpose().mult(localStiffnessMatrixElement5)).mult(rotMatrixElement5);
-    SimpleMatrix globalStiffnessMatrixElement6 = (rotMatrixElement6.transpose().mult(localStiffnessMatrixElement6)).mult(rotMatrixElement6);
-    SimpleMatrix globalStiffnessMatrixElement7 = (rotMatrixElement7.transpose().mult(localStiffnessMatrixElement7)).mult(rotMatrixElement7);
-    SimpleMatrix globalStiffnessMatrixElement8 = (rotMatrixElement8.transpose().mult(localStiffnessMatrixElement8)).mult(rotMatrixElement8);
-    SimpleMatrix globalStiffnessMatrixElement9 = (rotMatrixElement9.transpose().mult(localStiffnessMatrixElement9)).mult(rotMatrixElement9);
-    SimpleMatrix globalStiffnessMatrixElement10 = (rotMatrixElement10.transpose().mult(localStiffnessMatrixElement10)).mult(rotMatrixElement10);
-    SimpleMatrix globalStiffnessMatrixElement11 = (rotMatrixElement11.transpose().mult(localStiffnessMatrixElement11)).mult(rotMatrixElement11);
-    SimpleMatrix globalStiffnessMatrixElement12 = (rotMatrixElement12.transpose().mult(localStiffnessMatrixElement12)).mult(rotMatrixElement12);
-
-    SimpleMatrix globalStiffnessMatrix = new SimpleMatrix(21,21,true,
-// row: #1
-            globalStiffnessMatrixElement1.get(0,0) + globalStiffnessMatrixElement3.get(0,0) + globalStiffnessMatrixElement4.get(0,0),//u1
-            globalStiffnessMatrixElement1.get(0,1) + globalStiffnessMatrixElement3.get(0,1) + globalStiffnessMatrixElement4.get(0,1),//v1
-            globalStiffnessMatrixElement1.get(0,2) + globalStiffnessMatrixElement3.get(0,2) + globalStiffnessMatrixElement4.get(0,2),//t1
-            globalStiffnessMatrixElement1.get(0,3),//u2
-            globalStiffnessMatrixElement1.get(0,4),//v2
-            globalStiffnessMatrixElement1.get(0,5),//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            0,//u4
-            0,//v4
-            0,//t4
-            globalStiffnessMatrixElement3.get(0,3),//u5
-            globalStiffnessMatrixElement3.get(0,4),//v5
-            globalStiffnessMatrixElement3.get(0,5),//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement4.get(0,3),//u7
-            globalStiffnessMatrixElement4.get(0,4),//v7
-            globalStiffnessMatrixElement4.get(0,5),//t7
-//next row #2
-            globalStiffnessMatrixElement1.get(1,0) + globalStiffnessMatrixElement3.get(1,0) + globalStiffnessMatrixElement4.get(1,0),//u1
-            globalStiffnessMatrixElement1.get(1,1) + globalStiffnessMatrixElement3.get(1,1) + globalStiffnessMatrixElement4.get(1,1),//v1
-            globalStiffnessMatrixElement1.get(1,2) + globalStiffnessMatrixElement3.get(1,2) + globalStiffnessMatrixElement4.get(1,2),//t1
-            globalStiffnessMatrixElement1.get(1,3),//u2
-            globalStiffnessMatrixElement1.get(1,4),//v2
-            globalStiffnessMatrixElement1.get(1,5),//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            0,//u4
-            0,//v4
-            0,//t4
-            globalStiffnessMatrixElement3.get(1,3),//u5
-            globalStiffnessMatrixElement3.get(1,4),//v5
-            globalStiffnessMatrixElement3.get(1,5),//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement4.get(1,3),//u7
-            globalStiffnessMatrixElement4.get(1,4),//v7
-            globalStiffnessMatrixElement4.get(1,5),//t7
-//next row #3
-            globalStiffnessMatrixElement1.get(2,0) + globalStiffnessMatrixElement3.get(2,0) + globalStiffnessMatrixElement4.get(2,0),//u1
-            globalStiffnessMatrixElement1.get(2,1) + globalStiffnessMatrixElement3.get(2,1) + globalStiffnessMatrixElement4.get(2,1),//v1
-            globalStiffnessMatrixElement1.get(2,2) + globalStiffnessMatrixElement3.get(2,2) + globalStiffnessMatrixElement4.get(2,2),//t1
-            globalStiffnessMatrixElement1.get(2,3),//u2
-            globalStiffnessMatrixElement1.get(2,4),//v2
-            globalStiffnessMatrixElement1.get(2,5),//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            0,//u4
-            0,//v4
-            0,//t4
-            globalStiffnessMatrixElement3.get(2,3),//u5
-            globalStiffnessMatrixElement3.get(2,4),//v5
-            globalStiffnessMatrixElement3.get(2,5),//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement4.get(2,3),//u7
-            globalStiffnessMatrixElement4.get(2,4),//v7
-            globalStiffnessMatrixElement4.get(2,5),//t7
-//next row #4
-            globalStiffnessMatrixElement1.get(3,0),//u1
-            globalStiffnessMatrixElement1.get(3,1),//v1
-            globalStiffnessMatrixElement1.get(3,2),//t1
-            globalStiffnessMatrixElement1.get(3,3) + globalStiffnessMatrixElement2.get(0,0) + globalStiffnessMatrixElement5.get(0,0) + globalStiffnessMatrixElement6.get(0,0),//u2
-            globalStiffnessMatrixElement1.get(3,4) + globalStiffnessMatrixElement2.get(0,1) + globalStiffnessMatrixElement5.get(0,1) + globalStiffnessMatrixElement6.get(0,1),//v2
-            globalStiffnessMatrixElement1.get(3,5) + globalStiffnessMatrixElement2.get(0,2) + globalStiffnessMatrixElement5.get(0,2) + globalStiffnessMatrixElement6.get(0,2),//t2
-            globalStiffnessMatrixElement2.get(0,3),//u3
-            globalStiffnessMatrixElement2.get(0,4),//v3
-            globalStiffnessMatrixElement2.get(0,5),//t3
-            globalStiffnessMatrixElement6.get(0,3),//u4
-            globalStiffnessMatrixElement6.get(0,4),//v4
-            globalStiffnessMatrixElement6.get(0,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement5.get(0,3),//u7
-            globalStiffnessMatrixElement5.get(0,4),//v7
-            globalStiffnessMatrixElement5.get(0,5),//t7
-//next row #5
-            globalStiffnessMatrixElement1.get(4,0),//u1
-            globalStiffnessMatrixElement1.get(4,1),//v1
-            globalStiffnessMatrixElement1.get(4,2),//t1
-            globalStiffnessMatrixElement1.get(4,3) + globalStiffnessMatrixElement2.get(1,0) + globalStiffnessMatrixElement5.get(1,0) + globalStiffnessMatrixElement6.get(1,0),//u2
-            globalStiffnessMatrixElement1.get(4,4) + globalStiffnessMatrixElement2.get(1,1) + globalStiffnessMatrixElement5.get(1,1) + globalStiffnessMatrixElement6.get(1,1),//v2
-            globalStiffnessMatrixElement1.get(4,5) + globalStiffnessMatrixElement2.get(1,2) + globalStiffnessMatrixElement5.get(1,2) + globalStiffnessMatrixElement6.get(1,2),//t2
-            globalStiffnessMatrixElement2.get(1,3),//u3
-            globalStiffnessMatrixElement2.get(1,4),//v3
-            globalStiffnessMatrixElement2.get(1,5),//t3
-            globalStiffnessMatrixElement6.get(1,3),//u4
-            globalStiffnessMatrixElement6.get(1,4),//v4
-            globalStiffnessMatrixElement6.get(1,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement5.get(1,3),//u7
-            globalStiffnessMatrixElement5.get(1,4),//v7
-            globalStiffnessMatrixElement5.get(1,5),//t7
-//next row #6
-            globalStiffnessMatrixElement1.get(5,0),//u1
-            globalStiffnessMatrixElement1.get(5,1),//v1
-            globalStiffnessMatrixElement1.get(5,2),//t1
-            globalStiffnessMatrixElement1.get(5,3) + globalStiffnessMatrixElement2.get(2,0) + globalStiffnessMatrixElement5.get(2,0) + globalStiffnessMatrixElement6.get(2,0),//u2
-            globalStiffnessMatrixElement1.get(5,4) + globalStiffnessMatrixElement2.get(2,1) + globalStiffnessMatrixElement5.get(2,1) + globalStiffnessMatrixElement6.get(2,1),//v2
-            globalStiffnessMatrixElement1.get(5,5) + globalStiffnessMatrixElement2.get(2,2) + globalStiffnessMatrixElement5.get(2,2) + globalStiffnessMatrixElement6.get(2,2),//t2
-            globalStiffnessMatrixElement2.get(2,3),//u3
-            globalStiffnessMatrixElement2.get(2,4),//v3
-            globalStiffnessMatrixElement2.get(2,5),//t3
-            globalStiffnessMatrixElement6.get(2,3),//u4
-            globalStiffnessMatrixElement6.get(2,4),//v4
-            globalStiffnessMatrixElement6.get(2,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement5.get(2,3),//u7
-            globalStiffnessMatrixElement5.get(2,4),//v7
-            globalStiffnessMatrixElement5.get(2,5),//t7
-//next row #7
-            0,//u1
-            0,//v1
-            0,//t1
-            globalStiffnessMatrixElement2.get(3,3),//u2
-            globalStiffnessMatrixElement2.get(3,4),//v2
-            globalStiffnessMatrixElement2.get(3,5),//t2
-            globalStiffnessMatrixElement2.get(3,3) + globalStiffnessMatrixElement8.get(0,0) + globalStiffnessMatrixElement7.get(0,0),//u3
-            globalStiffnessMatrixElement2.get(3,4) + globalStiffnessMatrixElement8.get(0,1) + globalStiffnessMatrixElement7.get(0,1),//v3
-            globalStiffnessMatrixElement2.get(3,5) + globalStiffnessMatrixElement8.get(0,2) + globalStiffnessMatrixElement7.get(0,2),//t3
-            globalStiffnessMatrixElement7.get(0,3),//u4
-            globalStiffnessMatrixElement7.get(0,4),//v4
-            globalStiffnessMatrixElement7.get(0,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement8.get(0,3),//u6
-            globalStiffnessMatrixElement8.get(0,4),//v6
-            globalStiffnessMatrixElement8.get(0,5),//t6
-            0,//u7
-            0,//v7
-            0,//t7
-//next row #8
-            0,//u1
-            0,//v1
-            0,//t1
-            globalStiffnessMatrixElement2.get(4,3),//u2
-            globalStiffnessMatrixElement2.get(4,4),//v2
-            globalStiffnessMatrixElement2.get(4,5),//t2
-            globalStiffnessMatrixElement2.get(4,3) + globalStiffnessMatrixElement8.get(1,0) + globalStiffnessMatrixElement7.get(1,0),//u3
-            globalStiffnessMatrixElement2.get(4,4) + globalStiffnessMatrixElement8.get(1,1) + globalStiffnessMatrixElement7.get(1,1),//v3
-            globalStiffnessMatrixElement2.get(4,5) + globalStiffnessMatrixElement8.get(1,2) + globalStiffnessMatrixElement7.get(1,2),//t3
-            globalStiffnessMatrixElement7.get(1,3),//u4
-            globalStiffnessMatrixElement7.get(1,4),//v4
-            globalStiffnessMatrixElement7.get(1,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement8.get(1,3),//u6
-            globalStiffnessMatrixElement8.get(1,4),//v6
-            globalStiffnessMatrixElement8.get(1,5),//t6
-            0,//u7
-            0,//v7
-            0,//t7
-//next row #9
-            0,//u1
-            0,//v1
-            0,//t1
-            globalStiffnessMatrixElement2.get(5,3),//u2
-            globalStiffnessMatrixElement2.get(5,4),//v2
-            globalStiffnessMatrixElement2.get(5,5),//t2
-            globalStiffnessMatrixElement2.get(5,3) + globalStiffnessMatrixElement8.get(2,0) + globalStiffnessMatrixElement7.get(2,0),//u3
-            globalStiffnessMatrixElement2.get(5,4) + globalStiffnessMatrixElement8.get(2,1) + globalStiffnessMatrixElement7.get(2,1),//v3
-            globalStiffnessMatrixElement2.get(5,5) + globalStiffnessMatrixElement8.get(2,2) + globalStiffnessMatrixElement7.get(2,2),//t3
-            globalStiffnessMatrixElement7.get(2,3),//u4
-            globalStiffnessMatrixElement7.get(2,4),//v4
-            globalStiffnessMatrixElement7.get(2,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement8.get(2,3),//u6
-            globalStiffnessMatrixElement8.get(2,4),//v6
-            globalStiffnessMatrixElement8.get(2,5),//t6
-            0,//u7
-            0,//v7
-            0,//t7
-//next row #10
-            0,//u1
-            0,//v1
-            0,//t1
-            globalStiffnessMatrixElement6.get(3,3),//u2
-            globalStiffnessMatrixElement6.get(3,4),//v2
-            globalStiffnessMatrixElement6.get(3,5),//t2
-            globalStiffnessMatrixElement7.get(3,3),//u3
-            globalStiffnessMatrixElement7.get(3,4),//v3
-            globalStiffnessMatrixElement7.get(3,5),//t3
-            globalStiffnessMatrixElement9.get(0,0) + globalStiffnessMatrixElement10.get(0,0) + globalStiffnessMatrixElement6.get(3,3) + globalStiffnessMatrixElement7.get(3,3),//u4
-            globalStiffnessMatrixElement9.get(0,1) + globalStiffnessMatrixElement10.get(0,1) + globalStiffnessMatrixElement6.get(3,4) + globalStiffnessMatrixElement7.get(3,4),//v4
-            globalStiffnessMatrixElement9.get(0,2) + globalStiffnessMatrixElement10.get(0,2) + globalStiffnessMatrixElement6.get(3,5) + globalStiffnessMatrixElement7.get(3,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement10.get(0,3),//u6
-            globalStiffnessMatrixElement10.get(0,4),//v6
-            globalStiffnessMatrixElement10.get(0,5),//t6
-            globalStiffnessMatrixElement9.get(0,3),//u7
-            globalStiffnessMatrixElement9.get(0,4),//v7
-            globalStiffnessMatrixElement9.get(0,5),//t7
-//next row #11
-            0,//u1
-            0,//v1
-            0,//t1
-            globalStiffnessMatrixElement6.get(4,3),//u2
-            globalStiffnessMatrixElement6.get(4,4),//v2
-            globalStiffnessMatrixElement6.get(4,5),//t2
-            globalStiffnessMatrixElement7.get(4,3),//u3
-            globalStiffnessMatrixElement7.get(4,4),//v3
-            globalStiffnessMatrixElement7.get(4,5),//t3
-            globalStiffnessMatrixElement9.get(1,0) + globalStiffnessMatrixElement10.get(1,0) + globalStiffnessMatrixElement6.get(4,3) + globalStiffnessMatrixElement7.get(4,3),//u4
-            globalStiffnessMatrixElement9.get(1,1) + globalStiffnessMatrixElement10.get(1,1) + globalStiffnessMatrixElement6.get(4,4) + globalStiffnessMatrixElement7.get(4,4),//v4
-            globalStiffnessMatrixElement9.get(1,2) + globalStiffnessMatrixElement10.get(1,2) + globalStiffnessMatrixElement6.get(4,5) + globalStiffnessMatrixElement7.get(4,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement10.get(1,3),//u6
-            globalStiffnessMatrixElement10.get(1,4),//v6
-            globalStiffnessMatrixElement10.get(1,5),//t6
-            globalStiffnessMatrixElement9.get(1,3),//u7
-            globalStiffnessMatrixElement9.get(1,4),//v7
-            globalStiffnessMatrixElement9.get(1,5),//t7
-//next row #12
-            0,//u1
-            0,//v1
-            0,//t1
-            globalStiffnessMatrixElement6.get(5,3),//u2
-            globalStiffnessMatrixElement6.get(5,4),//v2
-            globalStiffnessMatrixElement6.get(5,5),//t2
-            globalStiffnessMatrixElement7.get(5,3),//u3
-            globalStiffnessMatrixElement7.get(5,4),//v3
-            globalStiffnessMatrixElement7.get(5,5),//t3
-            globalStiffnessMatrixElement9.get(2,0) + globalStiffnessMatrixElement10.get(2,0) + globalStiffnessMatrixElement6.get(5,3) + globalStiffnessMatrixElement7.get(5,3),//u4
-            globalStiffnessMatrixElement9.get(2,1) + globalStiffnessMatrixElement10.get(2,1) + globalStiffnessMatrixElement6.get(5,4) + globalStiffnessMatrixElement7.get(5,4),//v4
-            globalStiffnessMatrixElement9.get(2,2) + globalStiffnessMatrixElement10.get(2,2) + globalStiffnessMatrixElement6.get(5,5) + globalStiffnessMatrixElement7.get(5,5),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement10.get(2,3),//u6
-            globalStiffnessMatrixElement10.get(2,4),//v6
-            globalStiffnessMatrixElement10.get(2,5),//t6
-            globalStiffnessMatrixElement9.get(2,3),//u7
-            globalStiffnessMatrixElement9.get(2,4),//v7
-            globalStiffnessMatrixElement9.get(2,5),//t7
-//next row #13
-            globalStiffnessMatrixElement3.get(3,3),//u1
-            globalStiffnessMatrixElement3.get(3,4),//v1
-            globalStiffnessMatrixElement3.get(3,5),//t1
-            0,//u2
-            0,//v2
-            0,//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            0,//u4
-            0,//v4
-            0,//t4
-            globalStiffnessMatrixElement3.get(3,3) + globalStiffnessMatrixElement11.get(0,0),//u5
-            globalStiffnessMatrixElement3.get(3,4) + globalStiffnessMatrixElement11.get(0,1),//v5
-            globalStiffnessMatrixElement3.get(3,5) + globalStiffnessMatrixElement11.get(0,2),//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement11.get(0,3),//u7
-            globalStiffnessMatrixElement11.get(0,4),//v7
-            globalStiffnessMatrixElement11.get(0,5),//t7
-//next row #14
-            globalStiffnessMatrixElement3.get(4,3),//u1
-            globalStiffnessMatrixElement3.get(4,4),//v1
-            globalStiffnessMatrixElement3.get(4,5),//t1
-            0,//u2
-            0,//v2
-            0,//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            0,//u4
-            0,//v4
-            0,//t4
-            globalStiffnessMatrixElement3.get(4,3) + globalStiffnessMatrixElement11.get(1,0),//u5
-            globalStiffnessMatrixElement3.get(4,4) + globalStiffnessMatrixElement11.get(1,1),//v5
-            globalStiffnessMatrixElement3.get(4,5) + globalStiffnessMatrixElement11.get(1,2),//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement11.get(1,3),//u7
-            globalStiffnessMatrixElement11.get(1,4),//v7
-            globalStiffnessMatrixElement11.get(1,5),//t7
-//next row #15
-            globalStiffnessMatrixElement3.get(5,3),//u1
-            globalStiffnessMatrixElement3.get(5,4),//v1
-            globalStiffnessMatrixElement3.get(5,5),//t1
-            0,//u2
-            0,//v2
-            0,//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            0,//u4
-            0,//v4
-            0,//t4
-            globalStiffnessMatrixElement3.get(5,3) + globalStiffnessMatrixElement11.get(2,0),//u5
-            globalStiffnessMatrixElement3.get(5,4) + globalStiffnessMatrixElement11.get(2,1),//v5
-            globalStiffnessMatrixElement3.get(5,5) + globalStiffnessMatrixElement11.get(2,2),//t5
-            0,//u6
-            0,//v6
-            0,//t6
-            globalStiffnessMatrixElement11.get(2,3),//u7
-            globalStiffnessMatrixElement11.get(2,4),//v7
-            globalStiffnessMatrixElement11.get(2,5),//t7
-//next row #16
-            0,//u1
-            0,//v1
-            0,//t1
-            0,//u2
-            0,//v2
-            0,//t2
-            globalStiffnessMatrixElement8.get(3,0),//u3
-            globalStiffnessMatrixElement8.get(3,1),//v3
-            globalStiffnessMatrixElement8.get(3,2),//t3
-            globalStiffnessMatrixElement10.get(3,0),//u4
-            globalStiffnessMatrixElement10.get(3,1),//v4
-            globalStiffnessMatrixElement10.get(3,2),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement10.get(3,3) + globalStiffnessMatrixElement8.get(3,3) + globalStiffnessMatrixElement12.get(0,0),//u6
-            globalStiffnessMatrixElement10.get(3,4) + globalStiffnessMatrixElement8.get(3,4) + globalStiffnessMatrixElement12.get(0,1),//v6
-            globalStiffnessMatrixElement10.get(3,5) + globalStiffnessMatrixElement8.get(3,5) + globalStiffnessMatrixElement12.get(0,2),//t6
-            globalStiffnessMatrixElement12.get(0,3),//u7
-            globalStiffnessMatrixElement12.get(0,4),//v7
-            globalStiffnessMatrixElement12.get(0,5),//t7
-//next row #17
-            0,//u1
-            0,//v1
-            0,//t1
-            0,//u2
-            0,//v2
-            0,//t2
-            globalStiffnessMatrixElement8.get(4,0),//u3
-            globalStiffnessMatrixElement8.get(4,1),//v3
-            globalStiffnessMatrixElement8.get(4,2),//t3
-            globalStiffnessMatrixElement10.get(4,0),//u4
-            globalStiffnessMatrixElement10.get(4,1),//v4
-            globalStiffnessMatrixElement10.get(4,2),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement10.get(4,3) + globalStiffnessMatrixElement8.get(4,3) + globalStiffnessMatrixElement12.get(1,0),//u6
-            globalStiffnessMatrixElement10.get(4,4) + globalStiffnessMatrixElement8.get(4,4) + globalStiffnessMatrixElement12.get(1,1),//v6
-            globalStiffnessMatrixElement10.get(4,5) + globalStiffnessMatrixElement8.get(4,5) + globalStiffnessMatrixElement12.get(1,2),//t6
-            globalStiffnessMatrixElement12.get(1,3),//u7
-            globalStiffnessMatrixElement12.get(1,4),//v7
-            globalStiffnessMatrixElement12.get(1,5),//t7
-//next row #18
-            0,//u1
-            0,//v1
-            0,//t1
-            0,//u2
-            0,//v2
-            0,//t2
-            globalStiffnessMatrixElement8.get(5,0),//u3
-            globalStiffnessMatrixElement8.get(5,1),//v3
-            globalStiffnessMatrixElement8.get(5,2),//t3
-            globalStiffnessMatrixElement10.get(5,0),//u4
-            globalStiffnessMatrixElement10.get(5,1),//v4
-            globalStiffnessMatrixElement10.get(5,2),//t4
-            0,//u5
-            0,//v5
-            0,//t5
-            globalStiffnessMatrixElement10.get(5,3) + globalStiffnessMatrixElement8.get(5,3) + globalStiffnessMatrixElement12.get(2,0),//u6
-            globalStiffnessMatrixElement10.get(5,4) + globalStiffnessMatrixElement8.get(5,4) + globalStiffnessMatrixElement12.get(2,1),//v6
-            globalStiffnessMatrixElement10.get(5,5) + globalStiffnessMatrixElement8.get(5,5) + globalStiffnessMatrixElement12.get(2,2),//t6
-            globalStiffnessMatrixElement12.get(2,3),//u7
-            globalStiffnessMatrixElement12.get(2,4),//v7
-            globalStiffnessMatrixElement12.get(2,5),//t7
-//next row #19
-            globalStiffnessMatrixElement4.get(3,0),//u1
-            globalStiffnessMatrixElement4.get(3,1),//v1
-            globalStiffnessMatrixElement4.get(3,2),//t1
-            globalStiffnessMatrixElement5.get(3,0),//u2
-            globalStiffnessMatrixElement5.get(3,1),//v2
-            globalStiffnessMatrixElement5.get(3,2),//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            globalStiffnessMatrixElement9.get(3,0),//u4
-            globalStiffnessMatrixElement9.get(3,1),//v4
-            globalStiffnessMatrixElement9.get(3,2),//t4
-            globalStiffnessMatrixElement11.get(3,0),//u5
-            globalStiffnessMatrixElement11.get(3,1),//v5
-            globalStiffnessMatrixElement11.get(3,2),//t5
-            globalStiffnessMatrixElement12.get(3,0),//u6
-            globalStiffnessMatrixElement12.get(3,1),//v6
-            globalStiffnessMatrixElement12.get(3,2),//t6
-            globalStiffnessMatrixElement12.get(3,3) + globalStiffnessMatrixElement11.get(3,3) + globalStiffnessMatrixElement9.get(3,3) + globalStiffnessMatrixElement5.get(3,3) + globalStiffnessMatrixElement4.get(3,3),//u7
-            globalStiffnessMatrixElement12.get(3,4) + globalStiffnessMatrixElement11.get(3,4) + globalStiffnessMatrixElement9.get(3,4) + globalStiffnessMatrixElement5.get(3,4) + globalStiffnessMatrixElement4.get(3,4),//v7
-            globalStiffnessMatrixElement12.get(3,5) + globalStiffnessMatrixElement11.get(3,5) + globalStiffnessMatrixElement9.get(3,5) + globalStiffnessMatrixElement5.get(3,5) + globalStiffnessMatrixElement4.get(3,5),//t7
-//next row #20
-            globalStiffnessMatrixElement4.get(4,0),//u1
-            globalStiffnessMatrixElement4.get(4,1),//v1
-            globalStiffnessMatrixElement4.get(4,2),//t1
-            globalStiffnessMatrixElement5.get(4,0),//u2
-            globalStiffnessMatrixElement5.get(4,1),//v2
-            globalStiffnessMatrixElement5.get(4,2),//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            globalStiffnessMatrixElement9.get(4,0),//u4
-            globalStiffnessMatrixElement9.get(4,1),//v4
-            globalStiffnessMatrixElement9.get(4,2),//t4
-            globalStiffnessMatrixElement11.get(4,0),//u5
-            globalStiffnessMatrixElement11.get(4,1),//v5
-            globalStiffnessMatrixElement11.get(4,2),//t5
-            globalStiffnessMatrixElement12.get(4,0),//u6
-            globalStiffnessMatrixElement12.get(4,1),//v6
-            globalStiffnessMatrixElement12.get(4,2),//t6
-            globalStiffnessMatrixElement12.get(4,3) + globalStiffnessMatrixElement11.get(4,3) + globalStiffnessMatrixElement9.get(4,3) + globalStiffnessMatrixElement5.get(4,3) + globalStiffnessMatrixElement4.get(4,3),//u7
-            globalStiffnessMatrixElement12.get(4,4) + globalStiffnessMatrixElement11.get(4,4) + globalStiffnessMatrixElement9.get(4,4) + globalStiffnessMatrixElement5.get(4,4) + globalStiffnessMatrixElement4.get(4,4),//v7
-            globalStiffnessMatrixElement12.get(4,5) + globalStiffnessMatrixElement11.get(4,5) + globalStiffnessMatrixElement9.get(4,5) + globalStiffnessMatrixElement5.get(4,5) + globalStiffnessMatrixElement4.get(4,5),//t7
-//next row #21
-            globalStiffnessMatrixElement4.get(5,0),//u1
-            globalStiffnessMatrixElement4.get(5,1),//v1
-            globalStiffnessMatrixElement4.get(5,2),//t1
-            globalStiffnessMatrixElement5.get(5,0),//u2
-            globalStiffnessMatrixElement5.get(5,1),//v2
-            globalStiffnessMatrixElement5.get(5,2),//t2
-            0,//u3
-            0,//v3
-            0,//t3
-            globalStiffnessMatrixElement9.get(5,0),//u4
-            globalStiffnessMatrixElement9.get(5,1),//v4
-            globalStiffnessMatrixElement9.get(5,2),//t4
-            globalStiffnessMatrixElement11.get(5,0),//u5
-            globalStiffnessMatrixElement11.get(5,1),//v5
-            globalStiffnessMatrixElement11.get(5,2),//t5
-            globalStiffnessMatrixElement12.get(5,0),//u6
-            globalStiffnessMatrixElement12.get(5,1),//v6
-            globalStiffnessMatrixElement12.get(5,2),//t6
-            globalStiffnessMatrixElement12.get(5,3) + globalStiffnessMatrixElement11.get(5,3) + globalStiffnessMatrixElement9.get(5,3) + globalStiffnessMatrixElement5.get(5,3) + globalStiffnessMatrixElement4.get(5,3),//u7
-            globalStiffnessMatrixElement12.get(5,4) + globalStiffnessMatrixElement11.get(5,4) + globalStiffnessMatrixElement9.get(5,4) + globalStiffnessMatrixElement5.get(5,4) + globalStiffnessMatrixElement4.get(5,4),//v7
-            globalStiffnessMatrixElement12.get(5,5) + globalStiffnessMatrixElement11.get(5,5) + globalStiffnessMatrixElement9.get(5,5) + globalStiffnessMatrixElement5.get(5,5) + globalStiffnessMatrixElement4.get(5,5));//t7
-
-    SimpleMatrix externalForcesMatrix = new SimpleMatrix(21,1,true,
-            0.0,-5000.0*(0.003*1.2/2.0),0.0,
-            0.0,-5000.0*(0.003*1.7/2.0),0.0,
-            0.0,-5000.0*(0.003*0.5/2.0),0.0,
-            0.0,0.0,0.0,
-            -3000.0*Math.sqrt(3.0)/2.0,-3000.0/2.0,0.0,
-            0.0,0.0,0.0,
-            0.0,-5000.0,0.0);
-    SimpleMatrix ansMatrix = globalStiffnessMatrix.solve(externalForcesMatrix);
-    SimpleMatrix ansysMatrix = new SimpleMatrix(21,1,true,
-            -0.11051*pow(10,-3),-0.14671*pow(10,-2),0.77572*pow(10,-3),
-            -0.64035*pow(10,-4),-0.34332*pow(10,-3),0.77374*pow(10,-3),
-            0.0000    ,-0.22815*pow(10,-4),0.22897*pow(10,-3),
-            0.17456*pow(10,-4),-0.68288*pow(10,-4),0.37755*pow(10,-3),
-            0.21379*pow(10,-3),-0.14745*pow(10,-2),0.43457*pow(10,-3),
-            0.0000 , 0.0000,0.0000  ,
-            0.42841*pow(10,-3),-0.39472*pow(10,-3),0.82303*pow(10,-3));
-    SimpleMatrix internalForceSolverMatrix = new SimpleMatrix(21,1,true,
-            ansMatrix.get(0,0),
-            ansMatrix.get(1,0),
-            ansMatrix.get(2,0),
-            ansMatrix.get(3,0),
-            ansMatrix.get(4,0),
-            ansMatrix.get(5,0),
-            0,
-            0,
-            ansMatrix.get(8,0),
-            ansMatrix.get(9,0),
-            ansMatrix.get(10,0),
-            ansMatrix.get(11,0),
-            ansMatrix.get(12,0),
-            ansMatrix.get(13,0),
-            ansMatrix.get(14,0),
-            0,
-            0,
-            ansMatrix.get(17,0),
-            ansMatrix.get(18,0),
-            ansMatrix.get(19,0),
-            ansMatrix.get(20,0));
-
-    SimpleMatrix element1Stress = new SimpleMatrix(6,1,true,
-            ansMatrix.get(0,0),
-            ansMatrix.get(1,0),
-            ansMatrix.get(2,0),
-            ansMatrix.get(3,0),
-            ansMatrix.get(4,0),
-            ansMatrix.get(5,0));
-
-    SimpleMatrix element9Stress = new SimpleMatrix(6,1,true,
-            ansMatrix.get(9,0),
-            ansMatrix.get(10,0),
-            ansMatrix.get(11,0),
-            ansMatrix.get(18,0),
-            ansMatrix.get(19,0),
-            ansMatrix.get(20,0));
-
-    double axialStrain1 = -(element1Stress.get(0,0)-element1Stress.get(3,0))/beamElement1.BeamLenght();
-    double axialStrain9 = -(element9Stress.get(0,0)-element9Stress.get(3,0))/beamElement9.BeamLenght();
-
-    double axialStress1 = axialStrain1*beamElement1.getBeam().getYoungsModulus()/1000.0;
-    double axialStress9 = axialStrain9*beamElement9.getBeam().getYoungsModulus()/1000.0;
-
-
-    int ansSize = ansMatrix.getNumElements();
+    TwoDimenNode node1,node2,node3,node4,node5,node6,node7;
 
 
     @Override
@@ -621,146 +57,281 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tableLayout = (TableLayout) findViewById(R.id.utable);
+        edhBeamW = (EditText) findViewById(R.id.hbeamwidth);
+        edvBeamW = (EditText) findViewById(R.id.vbeamwidth);
+        edtBeamW = (EditText) findViewById(R.id.tbeamwidth);
 
-        Toast.makeText(this,axialStress1  + "*" + axialStress9, Toast.LENGTH_SHORT).show();
+        edhBeamH = (EditText) findViewById(R.id.hbeamheaight);
+        edvBeamH = (EditText) findViewById(R.id.vbeamheaight);
+        edtBeamH = (EditText) findViewById(R.id.tbeamheaight);
 
-        for (int i =0 ; i<(ansSize+3) ; i++){
-            TableRow row = new TableRow(MainActivity.this);
-            if (i<ansSize) {
-                if (i % 2 == 0) {
-                    row.setBackgroundColor(Color.parseColor("#EEEEEE"));
-                } else {
-                    row.setBackgroundColor(Color.parseColor("#B0BEC5"));
+        edhBeamE = (EditText) findViewById(R.id.hbeammudulus);
+        edvBeamE = (EditText) findViewById(R.id.vbeammudulus);
+        edtBeamE = (EditText) findViewById(R.id.tbeammudulus);
+
+        edhBeamT = (EditText) findViewById(R.id.hbeamt);
+        edvBeamT = (EditText) findViewById(R.id.vbeamt);
+        edtBeamT = (EditText) findViewById(R.id.tbeamt);
+
+        edhBeamP = (EditText) findViewById(R.id.hbeampuasson);
+        edvBeamP = (EditText) findViewById(R.id.vbeampuasson);
+        edtBeamP = (EditText) findViewById(R.id.tbeampuasson);
+
+        edNode1X = (EditText) findViewById(R.id.node1x);
+        edNode1Y = (EditText) findViewById(R.id.node1y);
+
+        edNode2X = (EditText) findViewById(R.id.node2x);
+        edNode2Y = (EditText) findViewById(R.id.node2y);
+
+        edNode3X = (EditText) findViewById(R.id.node3x);
+        edNode3Y = (EditText) findViewById(R.id.node3y);
+
+        edNode4X = (EditText) findViewById(R.id.node4x);
+        edNode4Y = (EditText) findViewById(R.id.node4y);
+
+        edNode5X = (EditText) findViewById(R.id.node5x);
+        edNode5Y = (EditText) findViewById(R.id.node5y);
+
+        edNode6X = (EditText) findViewById(R.id.node6x);
+        edNode6Y = (EditText) findViewById(R.id.node6y);
+
+        edNode7X = (EditText) findViewById(R.id.node7x);
+        edNode7Y = (EditText) findViewById(R.id.node7y);
+
+        btn = (Button) findViewById(R.id.btn);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //GETTING HORIZONTAL BEAM DATA PASSING DEFAULT TO EMPTY ONES
+                svalhBeamW = edhBeamW.getText().toString();
+                if (svalhBeamW == null || svalhBeamW.isEmpty()){
+                    valhBeamW = 0.06;
+                }else {
+                    valhBeamW = Double.parseDouble(svalhBeamW);
                 }
-                for (int j = 0; j < 3; j++) {
-
-                    String uvt = "";
-                    if (j == 0) {
-                        TextView txt = new TextView(MainActivity.this);
-
-                        if (i % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#2196F3"));
-                            uvt = "u" + (i / 3 + 1) + ": ";
-                        }
-                        if ((i + 2) % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#E91E63"));
-                            uvt = "v" + (i / 3 + 1) + ": ";
-                        }
-                        if ((i + 1) % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#111111"));
-                            uvt = "θ" + (i / 3 + 1) + ": ";
-                        }
-                        txt.setText(uvt);
-                        txt.setGravity(Gravity.LEFT);
-                        txt.setTextSize((float) 20.0);
-                        txt.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                        row.addView(txt);
-                    } else {
-                        TextView txt = new TextView(MainActivity.this);
-                        if (j==1){
-                            String ansValue = String.valueOf(internalForceSolverMatrix.get(i, 0)*1000.0);
-
-                            txt.setText(ansValue);
-                        }else {
-                            String ansValue = String.valueOf(ansysMatrix.get(i, 0)*1000.0);
-                            txt.setText(ansValue);
-                        }
-
-
-                        if (i % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#2196F3"));
-                            uvt = "sigma" + (i + 1);
-                        }
-                        if ((i + 2) % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#E91E63"));
-                            uvt = "j" + (i + -1);
-                        }
-                        if ((i + 1) % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#111111"));
-                            uvt = "t" + (i + -2);
-                        }
-                        if (j < 2) {
-                            txt.setGravity(Gravity.CENTER);
-                        } else {
-                            txt.setGravity(Gravity.CENTER);
-                        }
-                        txt.setTextSize((float) 17.0);
-                        row.addView(txt);
-                    }
-
-
+                svalhBeamH = edhBeamH.getText().toString();
+                if (svalhBeamH == null || svalhBeamH.isEmpty()){
+                    valhBeamH = 0.1;
+                }else {
+                    valhBeamH = Double.parseDouble(svalhBeamH);
+                }
+                svalhBeamE = edhBeamE.getText().toString();
+                if (svalhBeamE == null || svalhBeamE.isEmpty()){
+                    valhBeamE = 200.0* pow(10.0,9);
+                }else {
+                    valhBeamE = Double.parseDouble(svalhBeamE);
+                }
+                svalhBeamT = edhBeamT.getText().toString();
+                if (svalhBeamT == null || svalhBeamT.isEmpty()){
+                    valhBeamT = 0.003;
+                }else {
+                    valhBeamT = Double.parseDouble(svalhBeamT);
+                }
+                svalhBeamP = edhBeamP.getText().toString();
+                if (svalhBeamP == null || svalhBeamP.isEmpty()){
+                    valhBeamP = 0.3;
+                }else {
+                    valhBeamP = Double.parseDouble(svalhBeamP);
+                }
+                //Vertical Beams:
+                svalvBeamW = edvBeamW.getText().toString();
+                if (svalvBeamW == null || svalvBeamW.isEmpty()){
+                    valvBeamW = 0.06;
+                }else {
+                    valvBeamW = Double.parseDouble(svalvBeamW);
+                }
+                svalvBeamH = edvBeamH.getText().toString();
+                if (svalvBeamH == null || svalvBeamH.isEmpty()){
+                    valvBeamH = 0.06;
+                }else {
+                    valvBeamH = Double.parseDouble(svalvBeamH);
+                }
+                svalvBeamE = edvBeamE.getText().toString();
+                if (svalvBeamE == null || svalvBeamE.isEmpty()){
+                    valvBeamE = 210.0* pow(10.0,9);
+                }else {
+                    valvBeamE = Double.parseDouble(svalvBeamE);
+                }
+                svalvBeamT = edvBeamT.getText().toString();
+                if (svalvBeamT == null || svalvBeamT.isEmpty()){
+                    valvBeamT = 0.003;
+                }else {
+                    valvBeamT = Double.parseDouble(svalvBeamT);
+                }
+                svalvBeamP = edvBeamP.getText().toString();
+                if (svalvBeamP == null || svalvBeamP.isEmpty()){
+                    valvBeamP = 0.3;
+                }else {
+                    valvBeamP = Double.parseDouble(svalvBeamP);
+                }
+                //Tilt Beams:
+                svaltBeamW = edtBeamW.getText().toString();
+                if (svaltBeamW == null || svaltBeamW.isEmpty()){
+                    valtBeamW = 0.04;
+                }else {
+                    valtBeamW = Double.parseDouble(svaltBeamW);
+                }
+                svaltBeamH = edtBeamH.getText().toString();
+                if (svaltBeamH == null || svaltBeamH.isEmpty()){
+                    valtBeamH = 0.06;
+                }else {
+                    valtBeamH = Double.parseDouble(svaltBeamH);
+                }
+                svaltBeamE = edtBeamE.getText().toString();
+                if (svaltBeamE == null || svaltBeamE.isEmpty()){
+                    valtBeamE = 210.0* pow(10.0,9);
+                }else {
+                    valtBeamE = Double.parseDouble(svaltBeamE);
+                }
+                svaltBeamT = edtBeamT.getText().toString();
+                if (svaltBeamT == null || svaltBeamT.isEmpty()){
+                    valtBeamT = 0.002;
+                }else {
+                    valtBeamT = Double.parseDouble(svaltBeamT);
+                }
+                svaltBeamP = edtBeamP.getText().toString();
+                if (svaltBeamP == null || svaltBeamP.isEmpty()){
+                    valtBeamP = 0.3;
+                }else {
+                    valtBeamP = Double.parseDouble(svaltBeamP);
                 }
 
-                tableLayout.addView(row);
-            }else {
-
-                for (int j = 0; j < 3; j++) {
-
-                    String uvt = "";
-                    if (j == 0) {
-                        TextView txt = new TextView(MainActivity.this);
-
-                        if (i % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#2196F3"));
-                            uvt = "σCD:";
-                        }
-                        if ((i + 2) % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#E91E63"));
-                            uvt = "σAB:";
-                        }
-                        if ((i + 1) % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#111111"));
-                            uvt = "###";
-                        }
-                        txt.setText(uvt);
-                        txt.setGravity(Gravity.LEFT);
-                        txt.setTextSize((float) 20.0);
-                        txt.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                        row.addView(txt);
-                    } else {
-                        String ansValue = "";
-                        if (i==21){
-                            if (j==1)
-                                ansValue = String.valueOf(axialStress1+"");
-                            else
-                                ansValue = 7.7363*10.0 +"";
-                        }if (i==22){
-                            if (j==1)
-                                ansValue = String.valueOf(axialStress9+"");
-                            else
-                                ansValue = -1.7025*1000.0+"";
-                        }if (i==23) {
-                            if (j==1)
-                                ansValue = "Android";
-                            else
-                                ansValue = "ANSYS 18.0";
-                        }
-                        TextView txt = new TextView(MainActivity.this);
-                        txt.setText(ansValue);
-
-                        if (i % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#2196F3"));
-                        }
-                        if ((i + 2) % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#E91E63"));
-                        }
-                        if ((i + 1) % 3 == 0) {
-                            txt.setTextColor(Color.parseColor("#111111"));
-                        }
-                        txt.setGravity(Gravity.CENTER);
-                        txt.setTextSize((float) 17.0);
-                        row.addView(txt);
-                    }
-
-
+                /*
+                *
+                * implementing nodes:
+                *
+                 */
+                svalNode1X = edNode1X.getText().toString();
+                if (svalNode1X == null || svalNode1X.isEmpty()){
+                    valNode1X = 0.0;
+                }else {
+                    valNode1X = Double.parseDouble(svalNode1X);
                 }
-                tableLayout.addView(row);
+                svalNode1Y = edNode1Y.getText().toString();
+                if (svalNode1Y == null || svalNode1Y.isEmpty()){
+                    valNode1Y = 0.0;
+                }else {
+                    valNode1Y = Double.parseDouble(svalNode1Y);
+                }
+                //Node2
+                svalNode2X = edNode2X.getText().toString();
+                if (svalNode2X == null || svalNode2X.isEmpty()){
+                    valNode2X = 1.2;
+                }else {
+                    valNode2X = Double.parseDouble(svalNode2X);
+                }
+                svalNode2Y = edNode2Y.getText().toString();
+                if (svalNode2Y == null || svalNode2Y.isEmpty()){
+                    valNode2Y = 0.0;
+                }else {
+                    valNode2Y = Double.parseDouble(svalNode2Y);
+                }
+                //Node3
+                svalNode3X = edNode3X.getText().toString();
+                if (svalNode3X == null || svalNode3X.isEmpty()){
+                    valNode3X = 1.7;
+                }else {
+                    valNode3X = Double.parseDouble(svalNode3X);
+                }
+                svalNode3Y = edNode3Y.getText().toString();
+                if (svalNode3Y == null || svalNode3Y.isEmpty()){
+                    valNode3Y = 0.0;
+                }else {
+                    valNode3Y = Double.parseDouble(svalNode3Y);
+                }
+                //Node4
+                svalNode4X = edNode4X.getText().toString();
+                if (svalNode4X == null || svalNode4X.isEmpty()){
+                    valNode4X = 1.2+1.0/3.0;
+                }else {
+                    valNode4X = Double.parseDouble(svalNode4X);
+                }
+                svalNode4Y = edNode4Y.getText().toString();
+                if (svalNode4Y == null || svalNode4Y.isEmpty()){
+                    valNode4Y = -8.0/30.0;
+                }else {
+                    valNode4Y = Double.parseDouble(svalNode4Y);
+                }
+                //Node5
+                svalNode5X = edNode5X.getText().toString();
+                if (svalNode5X == null || svalNode5X.isEmpty()){
+                    valNode5X = 0.0;
+                }else {
+                    valNode5X = Double.parseDouble(svalNode5X);
+                }
+                svalNode5Y = edNode5Y.getText().toString();
+                if (svalNode5Y == null || svalNode5Y.isEmpty()){
+                    valNode5Y = -0.6;
+                }else {
+                    valNode5Y = Double.parseDouble(svalNode5Y);
+                }
+                //Node6
+                svalNode6X = edNode6X.getText().toString();
+                if (svalNode6X == null || svalNode6X.isEmpty()){
+                    valNode6X = 1.7;
+                }else {
+                    valNode6X = Double.parseDouble(svalNode6X);
+                }
+                svalNode6Y = edNode6Y.getText().toString();
+                if (svalNode6Y == null || svalNode6Y.isEmpty()){
+                    valNode6Y = -0.4;
+                }else {
+                    valNode6Y = Double.parseDouble(svalNode6Y);
+                }
+                svalNode7X = edNode7X.getText().toString();
+                if (svalNode7X == null || svalNode7X.isEmpty()){
+                    valNode7X = 1.2;
+                }else {
+                    valNode7X = Double.parseDouble(svalNode7X);
+                }
+                svalNode7Y = edNode7Y.getText().toString();
+                if (svalNode7Y == null || svalNode7Y.isEmpty()){
+                    valNode7Y = -0.8;
+                }else {
+                    valNode7Y = Double.parseDouble(svalNode7Y);
+                }
+                /*
+                *
+                * *********************************
+                * ************  Beams *************
+                * *********************************
+                *
+                 */
+
+                horizontalBeam = new Beam(valhBeamE,valhBeamP,valhBeamW,valhBeamH,valhBeamT);
+                verticalBeam = new Beam(valvBeamE,valvBeamP,valvBeamW,valvBeamH,valvBeamT);
+                tiltBeam = new Beam(valtBeamE,valtBeamP,valtBeamW,valtBeamH,valtBeamT);
+
+                /*
+                *
+                * *********************************
+                * ************  Nodes *************
+                * *********************************
+                *
+                 */
+                node1 = new TwoDimenNode(valNode1X,valNode1Y);
+                node2 = new TwoDimenNode(valNode2X,valNode2Y);
+                node3 = new TwoDimenNode(valNode3X,valNode3Y);
+                node4 = new TwoDimenNode(valNode4X,valNode4Y);
+                node5 = new TwoDimenNode(valNode5X,valNode5Y);
+                node6 = new TwoDimenNode(valNode6X,valNode6Y);
+                node7 = new TwoDimenNode(valNode7X,valNode7Y);
+
+                Intent intent = new Intent(MainActivity.this,CalcActivity.class);
+                intent.putExtra("HBeam",horizontalBeam);
+                intent.putExtra("VBeam",verticalBeam);
+                intent.putExtra("TBeam",tiltBeam);
+                intent.putExtra("n1", node1);
+                intent.putExtra("n2", node2);
+                intent.putExtra("n3", node3);
+                intent.putExtra("n4", node4);
+                intent.putExtra("n5", node5);
+                intent.putExtra("n6", node6);
+                intent.putExtra("n7", node7);
+                startActivity(intent);
             }
-        }
-
-
-
+        });
 
     }
 

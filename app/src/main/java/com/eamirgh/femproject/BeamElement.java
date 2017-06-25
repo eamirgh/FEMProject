@@ -2,11 +2,13 @@ package com.eamirgh.femproject;
 
 import org.ejml.simple.SimpleMatrix;
 
+import java.io.Serializable;
+
 /**
  * Created by eamirgh on 6/2/2017.
  */
 
-public class BeamElement {
+public class BeamElement implements Serializable {
 
     TwoDimenNode nodei,nodej;
     Beam beam;

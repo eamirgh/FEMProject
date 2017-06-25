@@ -1,10 +1,12 @@
 package com.eamirgh.femproject;
 
+import java.io.Serializable;
+
 /**
  * Created by eamirgh on 5/28/2017.
  */
 
-public class TwoDimenNode {
+public class TwoDimenNode implements Serializable {
     double x = 0;
     double y = 0;
 
